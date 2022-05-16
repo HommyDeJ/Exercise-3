@@ -1,0 +1,78 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+    integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<html>
+<input id="amount" placeholder="Type an amount" />
+<br><br>
+<label id="words"><label>
+
+</html>
+
+
+<script>
+    $(document).ready(function () {
+        var numbersText = {
+            ones: ['', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'ELEVEN', 'TWELVE', 'THIRTEEN', 'FOURTEEN', 'FIFTEEN', 'SIXTEEN', 'SEVENTEEN', 'EIGHTEEN', 'NINETEEN'],
+            tens: ['', '', 'TWENTY', 'THIRTY', 'FOURTH', 'FIFTY', 'SIXTY', 'SEVENTY', 'EIGHTY', 'NINETY'],
+            sep: ['', ' THOUSAND ', ' MILLION ', ' BILLION ', ' TRILLION ', ' QUADRILLION ', ' QUINTILLION ', ' SEXTILLION ']
+        };
+
+        (function (ones, tens, sep) {
+
+            var input = document.getElementById('amount'),
+                output = document.getElementById('words');
+
+            input.onkeyup = function () {
+                var val = this.value,
+                    arr = [],
+                    str = '',
+                    i = 0;
+
+                if (val.length === 0) {
+                    output.textContent = 'No amount';
+                    return;
+                }
+
+                val = val.replace(/,/g, '');
+                if (isNaN(val)) {
+                    output.textContent = 'Invalid input.';
+                    return;
+                }
+
+
+                val = val.toString();
+                var valArray = val.split('\.', 2);
+                val = valArray[0];
+                var val2 = valArray[1];
+
+                if (val2 != null && val2 != '') {
+
+                    var str2 = `AND ${val2}/100`;
+                }
+                else {
+                    var str2 = '';
+                }
+
+                while (val) {
+                    arr.push(val % 1000);
+                    val = parseInt(val / 1000, 10);
+                }
+
+                while (arr.length) {
+                    str = (function (a) {
+                        var x = Math.floor(a / 100),
+                            y = Math.floor(a / 10) % 10,
+                            z = a % 10;
+
+                        return (x > 0 ? ones[x] + ' HUNDRED ' : '') +
+                            (y >= 2 ? tens[y] + ' ' + ones[z] : ones[10 * y + z]);
+                    })(arr.shift()) + sep[i++] + str;
+                }
+
+                output.textContent = `${str} ${str2} DOLLARS`;
+            };
+
+        })(numbersText.ones, numbersText.tens, numbersText.sep);
+    });
+</script>
